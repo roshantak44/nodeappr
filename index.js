@@ -4,7 +4,6 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var mongodb = require('mongodb');
 var mongoose = require('mongoose');
-var cron = require('cron');
 var port = process.env.PORT || 8000;
 
 var app = express();

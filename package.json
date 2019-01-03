@@ -1,31 +1,27 @@
 {
-  "name": "nodem2",
+  "name": "nodeappr",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "opencollective-postinstall"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "collective": {
-    "url": "https://opencollective.com/webpack"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roshantak44/nodeappr.git"
   },
-  "author": "roshan tak",
+  "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/roshantak44/nodeappr/issues"
+  },
+  "homepage": "https://github.com/roshantak44/nodeappr#readme",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "express-generator": "^4.16.0",
-    "forever": "^0.15.3",
-    "fs": "0.0.1-security",
-    "generator": "^1.0.1",
-    "git": "^0.1.5",
-    "jade": "^1.11.0",
-    "moment": "^2.23.0",
     "mongodb": "^3.1.10",
     "mongoose": "^5.4.1",
-    "node-cron": "^2.0.3",
     "nodemailer": "^5.0.0",
-    "nodemon": "^1.18.9",
-    "yarn": "^1.12.3"
+    "path": "^0.12.7"
   }
 }
