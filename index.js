@@ -7,7 +7,6 @@ var mongoose = require('mongoose');
 var port = process.env.PORT || 8000;
 
 var app = express();
-app.locals.moment = require('moment');
 var url = "mongodb://maildata:maildata1@ds015335.mlab.com:15335/nodem";
 
 app.set('port', process.env.PORT || 8000);
