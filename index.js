@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 var port = process.env.PORT || 8000;
 
 var app = express();
-var url = "mongodb://<roshan>:<roshantak44>@ds147734.mlab.com:47734/nodemo";
+var url = "mongodb://roshan:roshantak44@ds147734.mlab.com:47734/nodemo";
 
 app.set('port', process.env.PORT || 8000);
 app.set('views', path.join(__dirname, 'views'));
