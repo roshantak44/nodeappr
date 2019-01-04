@@ -4,7 +4,9 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var mongodb = require('mongodb');
 var mongoose = require('mongoose');
+var moment = require('moment-timezone');
 var port = process.env.PORT || 8000;
+
 
 var app = express();
 var url = "mongodb://roshan:roshantak44@ds147734.mlab.com:47734/nodemo";
@@ -34,6 +36,7 @@ var mailSchema = new mongoose.Schema({
 var maildata = mongoose.model("maildata", mailSchema);
 
 app.get('/', function(req, res){
+    console.log(req)
     res.render('index',{title: 'Exambazaar'});
 });
 
@@ -46,22 +49,84 @@ app.get('/contact', function(req, res){
 });
 
 app.get('/report', function(req, res){
-    maildata.find({}, function(err, docs){
+    maildata.find({}, function(err, res, docs){
 		if(err) res.json(err);
 		else    res.render('report', {maildatas: docs});
-});
+    });
 });
 
+    
+   var CronJob = require('cron').CronJob;
+   new CronJob('* * * * * *', function() {
+    console.log("this");
+    var now = new Date(); //also read on moment.js
+    console.log('this2');
+    //var after30Mins = moment().add(30, 'mins');
+    console.log('this3');//find a way to add mins to current date or moment moment().add(10, 'days'), moment.utc(date).local().format() 
+    var localtime = moment.utc().local().format();
+    console.log("this is local time", localtime); // ("2019-01-04T07:53:07.667+00:00") converted to 2019-01-04T13:04:21+05:30
+    console.log(now);
+    //console.log(after30Mins);
+    var query = ({ 
+        "date" : 
+           {     
+               $gte:   new Date(new Date().setHours(00,00,00)) ,     
+               $lt :  new Date(new Date().setHours(00,10,00)) 
+          } 
+       });// { $gte:ISODate("2019-11-19T14:00:00Z"), $lt: ISODate("2019-11-19T20:00:00Z") } })
+    var allMails = maildata.find(query,{date:1}).exec(function(error, _allMails){
+       console.log("Inside");
+       console.log(allMails);
+       console.log('afterallmails');
+       if(!error && allMails){
+           console.log(allMails);
+       }else{
+           console.log("Error: " + error); 
+       }
+   });
+   console.log('You will see this message every second');
+   }, null, true, 'America/Los_Angeles');
 
 app.post('/contact/send', function(req, res){ 
+    console.log(req)
     console.log('schedule time is here'+ JSON.stringify(req.body));
-    var myData = new maildata(req.body);
+    if(req.body.date.length == 0){
+        var newvar =  {
+                tomail: req.body.tomail,
+                cc: req.body.cc,
+                bcc: req.body.bcc,
+                tsubject: req.body.tsubject,
+                scheduledate: req.body.date,
+                message: req.body.message
+        };
+        var myData = maildata(newvar);
+        console.log("not mentioned default date");
+
+    }else{
+        var myData = maildata(req.body);
+        console.log("mentioned date");
+    }
     myData.save()
     .then(item => {
     res.redirect('/');
     })
     .catch(err => {
     res.status(400).send("unable to save to database");
+    });
+    
+    var now = new Date(); //also read on moment.js
+    var after30Mins = moment().add(30, 'mins');//find a way to add mins to current date or moment moment().add(10, 'days'), moment.utc(date).local().format() 
+    var localtime = moment.utc(now).local().format();
+    console.log("this is local time", localtime); // ("2019-01-04T07:53:07.667+00:00") converted to 2019-01-04T13:04:21+05:30
+    console.log(now);
+    console.log(after30Mins);
+    var query = {date : {$gte: now}, date: {$lt: after30Mins}};
+    maildata.find(query,{}).exec(function(error, allMails){
+        if(!error && allMails){
+            console.log(allMails);
+        }else{
+            console.log("Error: " + error);
+        }
     });
 
 
@@ -95,23 +160,10 @@ app.post('/contact/send', function(req, res){
             res.redirect('/');
         }
     });
+        console.log("send mail");
 });
 
 
-app.post('/report', function(req, res){
-	new maildata({
-		_id    : req.body.toemail,
-		tomail: req.body.tomail,
-        cc   : req.body.cc,
-        bcc : req.body.bcc,
-        tsubject : req.body.tsubject,
-        date : req.body.date,
-        message	: req.body.message
-	}).save(function(err, doc){
-		if(err) res.json(err);
-		else    res.redirect('/report');
-	});
-});
 
 
 app.listen(port, function(){
