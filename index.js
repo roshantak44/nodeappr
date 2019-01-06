@@ -61,20 +61,14 @@ app.get('/report', function(req, res){
     console.log("this");
     var now = new Date(); //also read on moment.js
     console.log('this2');
-    //var after30Mins = moment().add(30, 'mins');
+    var after30Mins = moment().add(30, 'mins');
     console.log('this3');//find a way to add mins to current date or moment moment().add(10, 'days'), moment.utc(date).local().format() 
-    var localtime = moment.utc().local().format();
+    var localtime = moment().format();
     console.log("this is local time", localtime); // ("2019-01-04T07:53:07.667+00:00") converted to 2019-01-04T13:04:21+05:30
     console.log(now);
     //console.log(after30Mins);
-    var query = ({ 
-        "date" : 
-           {     
-               $gte:   new Date(new Date().setHours(00,00,00)) ,     
-               $lt :  new Date(new Date().setHours(00,10,00)) 
-          } 
-       });// { $gte:ISODate("2019-11-19T14:00:00Z"), $lt: ISODate("2019-11-19T20:00:00Z") } })
-    var allMails = maildata.find(query,{date:1}).exec(function(error, _allMails){
+    var query = ({ date: { '$gte': after30Mins, '$lt': now } });// { $gte:ISODate("2019-11-19T14:00:00Z"), $lt: ISODate("2019-11-19T20:00:00Z") } })
+    var allMails = maildata.find(query,{}).exec(function(error, _allMails){
        console.log("Inside");
        console.log(allMails);
        console.log('afterallmails');
